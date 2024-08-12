@@ -6,27 +6,26 @@ import { useCart } from "./hooks/useCart";
 import { cartReducer, initialState } from "./reducers/cart-reducer";
 
 function App() {
-  const { cart, addToCart, removeFromCart, increaseQuantity, decreaseQuantity, clearCart, isEmpty, cartTotal } = useCart();
+  const { removeFromCart, increaseQuantity, decreaseQuantity, clearCart } = useCart();
 
     const [state, dispatch] = useReducer (cartReducer, initialState)
   return (
     <>
       <Header
-        cart={cart}
+        cart={state.cart}
         removeFromCart={removeFromCart}
         increaseQuantity={increaseQuantity}
         decreaseQuantity={decreaseQuantity}
         clearCart={clearCart}
-        isEmpty = {isEmpty}
-        cartTotal = {cartTotal}
+        
       />
 
       <main className="container-xl mt-5">
         <h2 className="text-center">Nuestra Colección</h2>
 
         <div className="row mt-5">
-          {state?.data.map((guitar) => (
-            <Guitar key={guitar.id} guitar={guitar} addToCart={addToCart} />
+          {state.data.map((guitar) => (
+            <Guitar key={guitar.id} guitar={guitar} dispatch={dispatch} />
           ))}
         </div>
       </main>

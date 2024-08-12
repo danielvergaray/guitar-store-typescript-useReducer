@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect} from "react";
 
 import type {Guitar, CartItem} from '../types'
 
@@ -19,20 +19,7 @@ export const useCart = () =>{
         localStorage.setItem('cart', JSON.stringify(cart));
       }, [cart]);
     
-      const addToCart = (item: Guitar) => {
-        const itemExists = cart.findIndex((guitar) => guitar.id === item.id);
-    
-        if (itemExists >= 0) {
-          if (cart[itemExists].quantity >= MAX_ITEMS) return;
-          const updatedCart = [...cart];
-          updatedCart[itemExists].quantity++;
-          setCart(updatedCart);
-        } else {
-          const newItem : CartItem = {...item, quantity : 1} /* Se crea una nueva variable (a la cual se le agrega el type CartItem), y en ella se copia todo lo de item y se agrega la variable quantity */
-/*           item.quantity = 1; */
-          setCart([...cart, newItem]);
-        }
-      };
+      
     
       const removeFromCart = (id: Guitar ['id']) => {
         setCart((prevCart) => prevCart.filter((guitar) => guitar.id !== id));
@@ -67,21 +54,16 @@ export const useCart = () =>{
         setCart([]);
       };
 
-      /* UseMemo evita que se ejecute el codigo si alguna de las dependencias que definamos no haya cambiado*/
-// State derivado
-  const isEmpty = useMemo (() => cart.length === 0,[cart]);
-  const cartTotal = useMemo (()=> cart.reduce ( (total, item)=> total + (item.quantity * item.price),0),[cart])
+      
 
     return {
    
         cart,
-        addToCart,
         removeFromCart,
         increaseQuantity,
         decreaseQuantity,
         clearCart,
-        isEmpty,
-        cartTotal
+ 
     }
 }
 

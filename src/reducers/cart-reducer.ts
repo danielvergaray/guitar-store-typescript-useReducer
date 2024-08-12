@@ -22,6 +22,9 @@ export type CartActions =
         cart: CartItem[]
     }
 
+    const MAX_ITEMS = 5;
+    const MIN_ITEMS = 1;
+
 // Funcion del useReducer (acciones)
 
     export const cartReducer = ( 
@@ -31,8 +34,33 @@ export type CartActions =
         ) =>{
 
         if (actions.type === "add-to-cart") {
+
+            const itemExists = state.cart.find((guitar) => guitar.id === actions.payload.item.id);
+    
+            let updatedCart : CartItem[] = []
+
+            if (itemExists) {
+              updatedCart = state.cart.map(item => {
+                if (item.id === actions.payload.item.id){
+                    if (item.quantity < MAX_ITEMS) {
+                        return {...item, quantity: item.quantity + 1}
+                    } else {
+                        return item
+                    }
+                } else {
+                    return item
+                }
+              })
+            
+            } else {
+              const newItem : CartItem = {...actions.payload.item, quantity : 1} /* Se crea una nueva variable (a la cual se le agrega el type CartItem), y en ella se copia todo lo de item y se agrega la variable quantity */
+    /*           item.quantity = 1; */
+              updatedCart = [...state.cart, newItem]
+            }
+
             return{
-                ...state
+                ...state,
+                cart: updatedCart
             }
         }
 
@@ -60,6 +88,8 @@ export type CartActions =
                 ...state
             }
         }
+
+        return state
 
     }
 

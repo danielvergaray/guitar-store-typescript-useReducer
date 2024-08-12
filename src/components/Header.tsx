@@ -1,17 +1,23 @@
 import type { CartItem, Guitar } from "../types";
+import { useMemo } from "react";
 
 type HeaderProps = {
   cart: CartItem[],
   removeFromCart: (id: Guitar['id']) => void,
   decreaseQuantity: (id: Guitar['id']) => void,
   increaseQuantity: (id: Guitar['id']) => void,
-  clearCart: () => void,
-  isEmpty: boolean,
-  cartTotal: number
+  clearCart: () => void
+
 }
 
-const Header = ({ cart, removeFromCart, increaseQuantity, decreaseQuantity, clearCart, isEmpty, cartTotal  } : HeaderProps) => {
+const Header = ({ cart, removeFromCart, increaseQuantity, decreaseQuantity, clearCart  } : HeaderProps) => {
   
+/* UseMemo evita que se ejecute el codigo si alguna de las dependencias que definamos no haya cambiado*/
+// State derivado
+const isEmpty = useMemo (() => cart.length === 0,[cart]);
+const cartTotal = useMemo (()=> cart.reduce ( (total, item)=> total + (item.quantity * item.price),0),[cart])
+
+
   return (
     <header className="py-5 header">
       <div className="container-xl">
