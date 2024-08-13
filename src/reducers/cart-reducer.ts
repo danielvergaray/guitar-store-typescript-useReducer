@@ -8,18 +8,25 @@ export type CartActions =
     { type: 'increase-quantity', payload: {id: Guitar['id']} } |
     { type: 'clear-cart'}
 
-    // Se crea el state Inicial
-
-    export const initialState : CartState = {
-        data: db,
-        cart: []
-    }
+   
 
     // Se definen los Types que tendran
 
     export type CartState = {
         data : Guitar[]
         cart: CartItem[]
+    }
+
+    const initialCart = () : CartItem [] => {
+        const localStorageCart = localStorage.getItem('cart');
+        return localStorageCart ? [...JSON.parse(localStorageCart)]: []
+      };
+
+       // Se crea el state Inicial
+
+    export const initialState : CartState = {
+        data: db,
+        cart: initialCart()
     }
 
     const MAX_ITEMS = 5;
@@ -66,26 +73,51 @@ export type CartActions =
 
 
         if (actions.type === "remove-from-cart"){
+            const updatedCart = state.cart.filter( item => item.id !== actions.payload.id)
             return{
-                ...state
+                ...state,
+                cart: updatedCart
             }
         }
 
         if (actions.type === "drecrease-quantity"){
+            const updatedCart = state.cart.map((item) => {
+                if (item.id === actions.payload.id && item.quantity > MIN_ITEMS) {
+                  return {
+                    ...item,
+                    quantity: item.quantity - 1,
+                  };
+                }
+                return item;
+              });
+              
             return{
-                ...state
+                ...state,
+                cart:updatedCart
             }
         }
 
         if (actions.type === "increase-quantity"){
+            const updatedCart = state.cart.map((item) => {
+                if (item.id === actions.payload.id && item.quantity < MAX_ITEMS) {
+                  return {
+                    ...item,
+                    quantity: item.quantity + 1,
+                  };
+                }
+                return item;
+              });
             return{
-                ...state
+                ...state,
+                cart: updatedCart
             }
         }
 
         if (actions.type === "clear-cart"){
+            
             return{
-                ...state
+                ...state,
+                cart: []
             }
         }
 

@@ -1,16 +1,14 @@
-import type { CartItem, Guitar } from "../types";
+import type { CartItem} from "../types";
 import { useMemo } from "react";
+import type { CartActions } from "../reducers/cart-reducer";
 
 type HeaderProps = {
   cart: CartItem[],
-  removeFromCart: (id: Guitar['id']) => void,
-  decreaseQuantity: (id: Guitar['id']) => void,
-  increaseQuantity: (id: Guitar['id']) => void,
-  clearCart: () => void
+  dispatch: React.Dispatch<CartActions>
 
 }
 
-const Header = ({ cart, removeFromCart, increaseQuantity, decreaseQuantity, clearCart  } : HeaderProps) => {
+const Header = ({ cart, dispatch  } : HeaderProps) => {
   
 /* UseMemo evita que se ejecute el codigo si alguna de las dependencias que definamos no haya cambiado*/
 // State derivado
@@ -70,14 +68,14 @@ const cartTotal = useMemo (()=> cart.reduce ( (total, item)=> total + (item.quan
                               <button 
                               type="button" 
                               className="btn btn-dark"
-                              onClick={()=>decreaseQuantity(guitar.id)}
+                              onClick={()=> dispatch({type:'drecrease-quantity', payload:{id: guitar.id}})}
                               >
                                 -
                               </button>
                               {guitar.quantity}
                               <button 
                               type="button" className="btn btn-dark"
-                              onClick={()=>increaseQuantity(guitar.id)}
+                              onClick={()=> dispatch({type:'increase-quantity', payload: {id: guitar.id}})}
                               >
                                 +
                               </button>
@@ -86,7 +84,7 @@ const cartTotal = useMemo (()=> cart.reduce ( (total, item)=> total + (item.quan
                               <button 
                               className="btn btn-danger" 
                               type="button"
-                              onClick={()=>removeFromCart(guitar.id)}
+                              onClick={()=> dispatch({type: 'remove-from-cart', payload: {id: guitar.id}})}
                               
                               >
                                 X
@@ -105,7 +103,7 @@ const cartTotal = useMemo (()=> cart.reduce ( (total, item)=> total + (item.quan
 
                 <button 
                 className="btn btn-dark w-100 mt-3 p-2"
-                onClick={clearCart}
+                onClick={()=> dispatch({type:'clear-cart'})}
                 >
                   Vaciar Carrito
                 </button>
